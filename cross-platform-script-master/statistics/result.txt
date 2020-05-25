@@ -1,0 +1,117 @@
+[1] "Precision"
+null device 
+          1 
+null device 
+          1 
+null device 
+          1 
+
+	Shapiro-Wilk normality test
+
+data:  precision[, "c5.target"]
+W = 0.94507, p-value = 0.6107
+
+
+	Shapiro-Wilk normality test
+
+data:  precision[, "c5.crosscheck"]
+W = 0.86808, p-value = 0.09495
+
+
+	Shapiro-Wilk normality test
+
+data:  precision[, "c5.browserbite"]
+W = 0.96855, p-value = 0.8771
+
+[1] " --- Anova on precision --- "
+Call:
+   aov(formula = data$precision ~ data$classifiers)
+
+Terms:
+                data$classifiers Residuals
+Sum of Squares         0.0861301 1.4505852
+Deg. of Freedom                2        27
+
+Residual standard error: 0.2317874
+Estimated effects may be unbalanced
+                 Df Sum Sq Mean Sq F value Pr(>F)
+data$classifiers  2 0.0861 0.04307   0.802  0.459
+Residuals        27 1.4506 0.05373               
+[1] " --- recall --- "
+null device 
+          1 
+null device 
+          1 
+null device 
+          1 
+
+	Shapiro-Wilk normality test
+
+data:  recall[, "c5.target"]
+W = 0.96698, p-value = 0.8615
+
+
+	Shapiro-Wilk normality test
+
+data:  recall[, "c5.crosscheck"]
+W = 0.96813, p-value = 0.873
+
+
+	Shapiro-Wilk normality test
+
+data:  recall[, "c5.browserbite"]
+W = 0.98791, p-value = 0.9936
+
+[1] " --- Anova on recall --- "
+Call:
+   aov(formula = data$recall ~ data$classifiers)
+
+Terms:
+                data$classifiers Residuals
+Sum of Squares         0.0462035 1.3954723
+Deg. of Freedom                2        27
+
+Residual standard error: 0.2273415
+Estimated effects may be unbalanced
+                 Df Sum Sq Mean Sq F value Pr(>F)
+data$classifiers  2 0.0462 0.02310   0.447  0.644
+Residuals        27 1.3955 0.05168               
+[1] " --- fscore --- "
+null device 
+          1 
+null device 
+          1 
+null device 
+          1 
+
+	Shapiro-Wilk normality test
+
+data:  fscore[, "c5.target"]
+W = 0.89027, p-value = 0.1708
+
+
+	Shapiro-Wilk normality test
+
+data:  fscore[, "c5.crosscheck"]
+W = 0.92489, p-value = 0.3996
+
+
+	Shapiro-Wilk normality test
+
+data:  fscore[, "c5.browserbite"]
+W = 0.89381, p-value = 0.1871
+
+[1] " --- Anova on fscore --- "
+Call:
+   aov(formula = data$fscore ~ data$classifiers)
+
+Terms:
+                data$classifiers Residuals
+Sum of Squares          0.041532  1.150183
+Deg. of Freedom                2        27
+
+Residual standard error: 0.2063961
+Estimated effects may be unbalanced
+                 Df Sum Sq Mean Sq F value Pr(>F)
+data$classifiers  2 0.0415 0.02077   0.487  0.619
+Residuals        27 1.1502 0.04260               

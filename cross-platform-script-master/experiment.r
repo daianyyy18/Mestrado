@@ -7,7 +7,7 @@ source('lib/learning-curve.r')
 source('lib/cross-validation.r')
 source('lib/feature-scale.r')
 
-dataset_learning <- read.arff('data/all.filtered.analysed.arff')
+dataset_learning <- read.arff('data/desktop-browsers.hist.arff')
 dataset_learning[,'crosscheck.base.a'] <- dataset_learning[,'baseHeight'] * dataset_learning[,'baseWidth']
 dataset_learning[,'crosscheck.target.a'] <- dataset_learning[,'targetHeight'] * dataset_learning[,'targetWidth']
 dataset_learning[,'crosscheck.SDR'] <- abs(dataset_learning[,'crosscheck.base.a'] - dataset_learning[,'crosscheck.target.a']) /
@@ -20,6 +20,18 @@ dataset_learning[,'crosscheck.LDTD'] <- dataset_learning[,'baseViewportWidth'] /
 features_crosscheck <- c(
     'crosscheck.SDR', 'crosscheck.disp', 'crosscheck.LDTD',
     'crosscheck.area', 'chiSquared'
+)
+
+dataset_learning[, 'diff.x'] <- dataset_learning[, 'baseX'] - dataset_learning[, 'targetX']
+dataset_learning[, 'diff.y'] <- dataset_learning[, 'baseY'] - dataset_learning[, 'targetY']
+dataset_learning[, 'diff.height'] <- dataset_learning[, 'baseHeight'] - dataset_learning[, 'targetHeight']
+dataset_learning[, 'diff.width'] <- dataset_learning[, 'baseWidth'] - dataset_learning[, 'targetWidth']
+features_browserbite <- c(
+    'diff.x', 'diff.y', 'diff.height', 'diff.width', 'targetPlatform',
+    'base_bin1', 'base_bin2', 'base_bin3', 'base_bin4', 'base_bin5',
+    'base_bin6', 'base_bin7', 'base_bin8', 'base_bin9', 'base_bin10',
+    'target_bin1', 'target_bin2', 'target_bin3', 'target_bin4', 'target_bin5',
+    'target_bin6', 'target_bin7', 'target_bin8', 'target_bin9', 'target_bin10'
 )
 
 dataset_learning[,'baseLeft'] <- dataset_learning[,'baseX']
@@ -49,6 +61,7 @@ dataset_learning[,'diff.parent.right.viewport'] <- abs(dataset_learning[,'basePa
 dataset_learning[,'parent.alignment'] <- dataset_learning[,'diff.left.viewport'] - dataset_learning[,'diff.right.viewport']
 dataset_learning[,'diff.parent.y'] <- abs(dataset_learning[,'baseParentY'] - dataset_learning[,'targetParentY']) / dataset_learning[,'diff.viewport']
 dataset_learning[,'diff.height.height'] <- abs(dataset_learning[,'baseHeight'] - dataset_learning[,'targetHeight']) / pmax(dataset_learning[,'baseHeight'],1)
+dataset_learning[,'diff.width.width'] <- abs(dataset_learning[,'baseWidth'] - dataset_learning[,'targetWidth']) / pmax(dataset_learning[,'baseWidth'],1)
 dataset_learning[,'diff.width.viewport'] <- abs(dataset_learning[,'baseWidth'] - dataset_learning[,'targetWidth']) / dataset_learning[,'diff.viewport']
 dataset_learning[,'imageDiff.size'] <- dataset_learning[,'imageDiff'] / pmax(dataset_learning[,'size'], 1)
 dataset_learning[,'chiSquared.size'] <- dataset_learning[,'chiSquared'] / pmax(dataset_learning[,'size'], 1)
@@ -65,17 +78,17 @@ dataset_learning[,'diff.out.viewport.right'] <- abs(
 features_target <- c(
 #    'baseHeight', 'baseWidth', 'targetHeight', 'targetWidth',
     'size',
-    'diff.height.height',
-#    'diff.left.relation', 'diff.right.relation',
-#    'diff.parent.left.relation', 'diff.parent.right.relation',
-    'diff.width.viewport',
-    'diff.left.viewport',
-    'diff.right.viewport',
+    'diff.height.height', 'diff.width.width',
+    'diff.left.relation', 'diff.right.relation',
+    'diff.parent.left.relation', 'diff.parent.right.relation',
+#    'diff.width.viewport',
+#    'diff.left.viewport',
+#    'diff.right.viewport',
 #    'alignment',
 #    'diff.parent.left.viewport',
 #    'diff.parent.right.viewport',
 #    'parent.alignment',
-    'diff.parent.y',
+#    'diff.parent.y',
     'imageDiff.size',
     'chiSquared.size',
     'phash',
@@ -150,27 +163,27 @@ for (i in 1:1) {
     folds <- createFolds(dataset_learning[, 'Result'])
     folds$Fold01 <- as.numeric(rownames(subset(dataset_learning, URL %in% f_urls[1:4])))
     folds$Fold02 <- as.numeric(rownames(subset(dataset_learning, URL %in% f_urls[5:8])))
-    folds$Fold03 <- as.numeric(rownames(subset(dataset_learning, URL %in% f_urls[9:12])))
-    folds$Fold04 <- as.numeric(rownames(subset(dataset_learning, URL %in% f_urls[13:16])))
-    folds$Fold05 <- as.numeric(rownames(subset(dataset_learning, URL %in% f_urls[17:20])))
-    folds$Fold06 <- as.numeric(rownames(subset(dataset_learning, URL %in% f_urls[21:24])))
-    folds$Fold07 <- as.numeric(rownames(subset(dataset_learning, URL %in% f_urls[25:28])))
-    folds$Fold08 <- as.numeric(rownames(subset(dataset_learning, URL %in% f_urls[29:34])))
-    folds$Fold09 <- as.numeric(rownames(subset(dataset_learning, URL %in% f_urls[35:40])))
-    folds$Fold10 <- as.numeric(rownames(subset(dataset_learning, URL %in% f_urls[41:45])))
+    folds$Fold03 <- as.numeric(rownames(subset(dataset_learning, URL %in% f_urls[9:11])))
+    folds$Fold04 <- as.numeric(rownames(subset(dataset_learning, URL %in% f_urls[12:15])))
+    folds$Fold05 <- as.numeric(rownames(subset(dataset_learning, URL %in% f_urls[16:18])))
+    folds$Fold06 <- as.numeric(rownames(subset(dataset_learning, URL %in% f_urls[18:20])))
+    folds$Fold07 <- as.numeric(rownames(subset(dataset_learning, URL %in% f_urls[21:24])))
+    folds$Fold08 <- as.numeric(rownames(subset(dataset_learning, URL %in% f_urls[25:27])))
+    folds$Fold09 <- as.numeric(rownames(subset(dataset_learning, URL %in% f_urls[28:30])))
+    folds$Fold10 <- as.numeric(rownames(subset(dataset_learning, URL %in% f_urls[31:34])))
 
     print('evaluating... ')
     print(i)
     print(f_urls)
-    c50_1 <- crossValidation(dataset_learning, dataset_learning, folds, features_target, svm_std, 'output/1.csv');
-    c50_2 <- crossValidation(dataset_learning, dataset_learning, folds, features_target, random_forest, 'output/2.csv');
+    c50_1 <- crossValidation(dataset_learning, dataset_learning, folds, features_target, c5, 'output/1.csv');
+    c50_2 <- crossValidation(dataset_learning, dataset_learning, folds, features_target, c5_boosted10, 'output/2.csv');
     c50_3 <- crossValidation(dataset_learning, dataset_learning, folds, features_target, c5_boosted20, 'output/3.csv');
-    c50_4 <- crossValidation(dataset_learning, dataset_learning, folds, features_target, c5, 'output/4.csv');
-    c50_5 <- crossValidation(dataset_learning, dataset_learning, folds, features_crosscheck, svm_std, 'output/5.csv');
-    c50_6 <- crossValidation(dataset_learning, dataset_learning, folds, features_crosscheck, random_forest, 'output/6.csv');
-    c50_7 <- crossValidation(dataset_learning, dataset_learning, folds, features_crosscheck, c5_boosted20, 'output/7.csv');
-    c50_8 <- crossValidation(dataset_learning, dataset_learning, folds, features_crosscheck, c5, 'output/8.csv');
-    c50_9 <- crossValidation(dataset_learning, dataset_learning, folds, features_target, svm_std_cutoff, 'output/9.csv');
+    c50_4 <- crossValidation(dataset_learning, dataset_learning, folds, features_crosscheck, c5, 'output/4.csv');
+    c50_5 <- crossValidation(dataset_learning, dataset_learning, folds, features_crosscheck, c5_boosted10, 'output/5.csv');
+    c50_6 <- crossValidation(dataset_learning, dataset_learning, folds, features_crosscheck, c5_boosted20, 'output/6.csv');
+    c50_7 <- crossValidation(dataset_learning, dataset_learning, folds, features_browserbite, c5, 'output/7.csv');
+    c50_8 <- crossValidation(dataset_learning, dataset_learning, folds, features_browserbite, c5_boosted10, 'output/8.csv');
+    c50_9 <- crossValidation(dataset_learning, dataset_learning, folds, features_browserbite, c5_boosted20, 'output/9.csv');
 
     r[((i - 1)*10 + 2):(10*(i) + 1), 1] <- c('Fold 1', 'Fold 2', 'Fold 3', 'Fold 4', 'Fold 5',
                                          'Fold 6', 'Fold 7', 'Fold 8', 'Fold 9', 'Fold 10')
@@ -224,9 +237,9 @@ p[(iterations*10+3), 1] <- 'SD'
 r[(iterations*10+3), 1] <- 'SD'
 rec[(iterations*10+3), 1] <- 'SD'
 
-r[1, ] <- c('', 'SVM-target', 'rf-target', 'c5-boosted20-target', 'c5-target', 'SVM-crosscheck', 'rf-crosscheck', 'c5-boosted20-crosscheck', 'c5-crosscheck', 'SVM-target')
+r[1, ] <- c('', 'c5-target', 'c5-b10-target', 'c5-b20-target', 'c5-crosscheck', 'c5-b10-crosscheck', 'c5-b20-crosscheck', 'c5-browserbite', 'c5-b10-browserbite', 'c5-b20-browserbite')
 write.table(r, file='output/fscore.csv', quote=FALSE, sep=';', row.names=FALSE, col.names=FALSE)
-p[1, ] <- c('', 'SVM-target', 'rf-target', 'c5-boosted20-target', 'c5-target', 'SVM-crosscheck', 'rf-crosscheck', 'c5-boosted20-crosscheck', 'c5-crosscheck', 'SVM-target')
+p[1, ] <- c('', 'c5-target', 'c5-b10-target', 'c5-b20-target', 'c5-crosscheck', 'c5-b10-crosscheck', 'c5-b20-crosscheck', 'c5-browserbite', 'c5-b10-browserbite', 'c5-b20-browserbite')
 write.table(p, file='output/precision.csv', quote=FALSE, sep=';', row.names=FALSE, col.names=FALSE)
-rec[1, ] <- c('', 'SVM-target', 'rf-target', 'c5-boosted20-target', 'c5-target', 'SVM-crosscheck', 'rf-crosscheck', 'c5-boosted20-crosscheck', 'c5-crosscheck', 'SVM-target')
+rec[1, ] <- c('', 'c5-target', 'c5-b10-target', 'c5-b20-target', 'c5-crosscheck', 'c5-b10-crosscheck', 'c5-b20-crosscheck', 'c5-browserbite', 'c5-b10-browserbite', 'c5-b20-browserbite')
 write.table(rec, file='output/recall.csv', quote=FALSE, sep=';', row.names=FALSE, col.names=FALSE)
